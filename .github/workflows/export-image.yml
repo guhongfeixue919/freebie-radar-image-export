@@ -1,0 +1,26 @@
+name: Export freebie-radar image
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull and save image
+        run: |
+          docker pull zichuanlan/freebie-radar:latest
+          docker save -o freebie-radar-latest.tar zichuanlan/freebie-radar:latest
+          ls -lh freebie-radar-latest.tar
+
+      - name: Publish tar as release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: image-latest
+          name: freebie-radar offline image
+          body: 离线镜像包，供绿联 NAS 通过“从 NAS 导入”使用。
+          files: freebie-radar-latest.tar
+          overwrite_files: true
